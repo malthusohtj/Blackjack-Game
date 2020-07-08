@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <title>Blackjack-Game</title>
+  </head>
+  <body>
+    <div class="heading">
+      <h1>Play Blackjack Online</h1>
+    </div>
+    <div class="blackjack-table-gridbox">
+      <div class="user-table">
+        <h2>You: <span id="user-points">0</span></h2>
+      </div>
+      <div class="dealer-table">
+        <h2>Dealer: <span id="dealer-points">0</span></h2>
+      </div>
+      <div class="buttons">
+        <button class="btn btn-primary">Hit</button>
+        <button class="btn btn-warning">Stand</button>
+        <button class="btn btn-danger">Deal</button>
+      </div>
+      <div class="points-table">
+        <table>
+          <tr>
+            <th>Wins</th>
+            <th>Losses</th>
+            <th>Draws</th>
+          </tr>
+          <tr>
+            <td><span id="user-wins">0</span></td>
+            <td><span id="user-losses">0</span></td>
+            <td><span id="user-draws">0</span></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
