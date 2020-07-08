@@ -15,16 +15,18 @@
       <h1>Play Blackjack Online</h1>
     </div>
     <div class="blackjack-table-gridbox">
-      <div class="user-table">
+      <div id="user-table">
         <h2>You: <span id="user-points">0</span></h2>
+        <div id="user-playing-table"></div>
       </div>
-      <div class="dealer-table">
+      <div id="dealer-table">
         <h2>Dealer: <span id="dealer-points">0</span></h2>
+        <div id="dealer-playing-table"></div>
       </div>
       <div class="buttons">
-        <button class="btn btn-primary">Hit</button>
-        <button class="btn btn-warning">Stand</button>
-        <button class="btn btn-danger">Deal</button>
+        <button class="btn btn-primary" id="hit-button">Hit</button>
+        <button class="btn btn-warning" id="stand-button">Stand</button>
+        <button class="btn btn-danger" id="deal-button">Deal</button>
       </div>
       <div class="points-table">
         <table>
