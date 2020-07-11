@@ -10,6 +10,8 @@
 }
 
 #user-table {
+  display: flex;
+  flex-direction: column;
   text-align: center;
   background-color: aquamarine;
   grid-column: 1 / 2;
@@ -17,6 +19,8 @@
 }
 
 #dealer-table {
+  display: flex;
+  flex-direction: column;
   text-align: center;
   background-color: pink;
   grid-column: 2 / 3;
@@ -28,6 +32,11 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+}
+
+img {
+  width: 20%;
+  margin: 5px;
 }
 
 .buttons {
