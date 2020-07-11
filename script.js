@@ -1,7 +1,14 @@
+//Setting click listeners for buttons
 document.getElementById("hit-button").addEventListener("click", userHit);
 document.getElementById("stand-button").addEventListener("click", userStand);
 document.getElementById("deal-button").addEventListener("click", userDeal);
 
+//Game audio
+let cardSound = new Audio("/sounds/swish.m4a");
+let winSound = new Audio("/sounds/cash.mp3");
+let nonWinSound = new Audio("/sounds/aww.mp3");
+
+//For easier access
 let gameData = {
   user: {
     table: "user-playing-table",
@@ -25,17 +32,26 @@ let gameData = {
 const USER = gameData.user;
 const DEALER = gameData.dealer;
 
+//To track whether game is finished and whether hands have been dealt to USER and DEALER
 let gameDoneStatus = true;
+let gameDealStatus = false;
 
 function userHit() {
-  if (USER.score <= 21) {
-    populateCard(USER);
-  }
-  if (USER.score > 21) {
-    userStand();
+  //To check if hands have ben dealt
+  if (gameDealStatus === true) {
+    if (USER.score <= 21) {
+      cardSound.play();
+      populateCard(USER);
+    }
+    if (USER.score > 21) {
+      userStand();
+    }
+  } else {
+    alert(`Please click "Deal" to start the game.`);
   }
 }
 
+//Populates card images onto playing area
 function populateCard(ACTIVEPLAYER) {
   let cardImage = document.createElement("img");
   let randomCard = gameData.cards[
@@ -47,6 +63,7 @@ function populateCard(ACTIVEPLAYER) {
   computeScore(randomCard, ACTIVEPLAYER);
 }
 
+//Calculates score of USER and DEALER after every "Hit"
 function computeScore(hitCard, ACTIVEPLAYER) {
   if (hitCard === "J" || hitCard === "Q" || hitCard === "K") {
     ACTIVEPLAYER.score += 10;
@@ -59,11 +76,16 @@ function computeScore(hitCard, ACTIVEPLAYER) {
   } else {
     ACTIVEPLAYER.score += parseInt(hitCard);
   }
-
   //Changing score header
-  document.getElementById(
-    ACTIVEPLAYER.pointsCounter
-  ).textContent = ACTIVEPLAYER.score.toString();
+  if (ACTIVEPLAYER.score <= 21) {
+    document.getElementById(
+      ACTIVEPLAYER.pointsCounter
+    ).textContent = ACTIVEPLAYER.score.toString();
+  } else {
+    document.getElementById(
+      ACTIVEPLAYER.pointsCounter
+    ).textContent = `BUST (${ACTIVEPLAYER.score.toString()})`;
+  }
 }
 
 function userStand() {
@@ -71,21 +93,32 @@ function userStand() {
   decideWinner();
 }
 
+//DEALER behaviour once USER clicks "Stand"
 function dealerMove() {
   while (
     DEALER.score < 16 ||
-    (DEALER.score >= 16 && USER.score <= 21 && USER.score >= DEALER.score)
+    (DEALER.score < 21 &&
+      DEALER.score >= 16 &&
+      USER.score <= 21 &&
+      USER.score >= DEALER.score)
   ) {
     populateCard(DEALER);
   }
 }
 
 function decideWinner() {
-  if (USER.score > DEALER.score && USER.score <= 21) {
+  if (
+    (USER.score > DEALER.score && USER.score <= 21) ||
+    (DEALER.score > 21 && USER.score <= 21)
+  ) {
     gameData.user.wins += 1;
     document.getElementById(
       gameData.user.winsCell
     ).textContent = gameData.user.wins.toString();
+    document.getElementById(
+      "resultMessage"
+    ).textContent = `You won! Click "Deal" to play again.`;
+    winSound.play();
   } else if (
     (USER.score < DEALER.score && DEALER.score <= 21) ||
     USER.score > 21
@@ -94,17 +127,27 @@ function decideWinner() {
     document.getElementById(
       gameData.user.lossesCell
     ).textContent = gameData.user.losses.toString();
+    document.getElementById(
+      "resultMessage"
+    ).textContent = `You lost. Click "Deal" to play again.`;
+    nonWinSound.play();
   } else {
     gameData.user.draws += 1;
     document.getElementById(
       gameData.user.winsCell
     ).textContent = gameData.user.draws.toString();
+    document.getElementById(
+      "resultMessage"
+    ).textContent = `Draw. Click "Deal" to play again.`;
+    nonWinSound.play();
   }
   gameDoneStatus = true;
 }
 
 function userDeal() {
   if (gameDoneStatus === true) {
+    cardSound.play();
+    //Resets game if prior game exists
     resetGame(USER);
     resetGame(DEALER);
     //First 2 cards dealt to USER
@@ -113,6 +156,11 @@ function userDeal() {
     //First 2 cards dealt to DEALER
     populateCard(DEALER);
     populateCard(DEALER);
+    //Change resultMessage
+    document.getElementById(
+      "resultMessage"
+    ).textContent = `Click "Hit" for another card or "Stand" to lock in your hand.`;
+    gameDealStatus = true;
   } else {
     alert("This game has not yet finished. Please click Stand.");
   }
@@ -128,6 +176,7 @@ function resetGame(PLAYER) {
   PLAYER.score = 0;
   //Reset score header
   document.getElementById(PLAYER.pointsCounter).textContent = 0;
-  //Reset gameDoneStatus
+  //Reset gameDoneStatus and gameDealStatus
   gameDoneStatus = false;
+  gameDealStatus = false;
 }
