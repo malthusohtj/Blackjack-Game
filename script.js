@@ -25,10 +25,15 @@ let gameData = {
 const USER = gameData.user;
 const DEALER = gameData.dealer;
 
-let gameDoneStatus = false;
+let gameDoneStatus = true;
 
 function userHit() {
-  populateCard(USER);
+  if (USER.score <= 21) {
+    populateCard(USER);
+  }
+  if (USER.score > 21) {
+    userStand();
+  }
 }
 
 function populateCard(ACTIVEPLAYER) {
@@ -54,6 +59,8 @@ function computeScore(hitCard, ACTIVEPLAYER) {
   } else {
     ACTIVEPLAYER.score += parseInt(hitCard);
   }
+
+  //Changing score header
   document.getElementById(
     ACTIVEPLAYER.pointsCounter
   ).textContent = ACTIVEPLAYER.score.toString();
@@ -79,7 +86,10 @@ function decideWinner() {
     document.getElementById(
       gameData.user.winsCell
     ).textContent = gameData.user.wins.toString();
-  } else if (USER.score < DEALER.score && DEALER.score <= 21) {
+  } else if (
+    (USER.score < DEALER.score && DEALER.score <= 21) ||
+    USER.score > 21
+  ) {
     gameData.user.losses += 1;
     document.getElementById(
       gameData.user.lossesCell
@@ -90,8 +100,34 @@ function decideWinner() {
       gameData.user.winsCell
     ).textContent = gameData.user.draws.toString();
   }
-  //Message to say you won/lost/drew
   gameDoneStatus = true;
 }
 
-function userDeal() {}
+function userDeal() {
+  if (gameDoneStatus === true) {
+    resetGame(USER);
+    resetGame(DEALER);
+    //First 2 cards dealt to USER
+    populateCard(USER);
+    populateCard(USER);
+    //First 2 cards dealt to DEALER
+    populateCard(DEALER);
+    populateCard(DEALER);
+  } else {
+    alert("This game has not yet finished. Please click Stand.");
+  }
+}
+
+function resetGame(PLAYER) {
+  //Remove all images
+  let cardImages = document.getElementById(PLAYER.table);
+  while (cardImages.firstChild) {
+    cardImages.removeChild(cardImages.lastChild);
+  }
+  //Reset score
+  PLAYER.score = 0;
+  //Reset score header
+  document.getElementById(PLAYER.pointsCounter).textContent = 0;
+  //Reset gameDoneStatus
+  gameDoneStatus = false;
+}

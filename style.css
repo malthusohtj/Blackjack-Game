@@ -18,6 +18,10 @@
   grid-row: 1 / 2;
 }
 
+#heading {
+  text-align: center;
+}
+
 #dealer-table {
   display: flex;
   flex-direction: column;
